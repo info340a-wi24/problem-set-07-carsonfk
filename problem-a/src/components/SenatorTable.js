@@ -9,13 +9,15 @@ const EXAMPLE_SENATORS = [
 const HEADER = ['Name', 'State', 'Phone', 'Twitter'];
 
 /* Your code goes here */
-export function SenatorTable() {
+export function SenatorTable({senatorsList}) {
   return (
     <table className="table table-bordered">
       <TableHeader columnNames={HEADER} />
-      {EXAMPLE_SENATORS.map(sen => {
-        <SenatorRow senatorData={sen} />         
-      })};
+      <tbody>
+        {senatorsList.map(temp => {
+          return <SenatorRow key = {temp.id} senatorData={temp} />         
+        })}
+      </tbody>
     </table>
   );
 }
