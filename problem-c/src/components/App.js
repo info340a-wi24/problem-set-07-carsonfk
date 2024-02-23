@@ -1,10 +1,29 @@
 import React, { useState } from 'react'; //import React Component
 import GameDataTable from './GameDataTable';
 import TeamSelectForm from './TeamSelectForm';
+import _ from 'lodash';
 
 function App(props) {
+  let displayed;
 
   //Your work goes here
+  const [filterCriteria, setCriteria] = useState(['', false]);
+
+  //console.log(filterCriteria)
+  if (filterCriteria[0] == '') {
+    displayed = props.gameData;
+  } else {
+    if (filterCriteria[1]) {
+      displayed = _.filter(props.gameData, ['winner', filterCriteria[0]]).concat(_.filter(props.gameData, ['runner_up', filterCriteria[0]]));
+    } else {
+      displayed = _.filter(props.gameData, ['winner', filterCriteria[0]]);
+    }
+    //console.log(displayed);
+  }
+
+  function applyFilter(select, includeRU) {
+    setCriteria([select, includeRU]);
+  }
 
   //get sorted list of unique teamNames. reduce array of objects into array of strings, 
   //convert to Set to get uniques, spread back into array, and sort 
@@ -19,8 +38,8 @@ function App(props) {
       </header>
     
       <main>
-        <TeamSelectForm teamOptions={uniqueTeamNames} />
-        <GameDataTable data={props.gameData} />
+        <TeamSelectForm teamOptions={uniqueTeamNames} applyFilter={applyFilter}/>
+        <GameDataTable data={displayed} />
       </main>
 
       <footer>

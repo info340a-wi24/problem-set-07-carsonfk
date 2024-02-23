@@ -3,12 +3,37 @@ import React, { useState } from 'react'; //import React Component
 import _ from 'lodash'; //import external library!
 
 export default function GameDataTable(props) {
+  let data = props.data;
 
   //Your state and event work goes here
+  const [sortByCriteria, setSort] = useState(null);
+  const [isAscending, setAscending] = useState(null);
 
+  function handleClick(click) {
+    if (click.currentTarget.name != sortByCriteria) {
+      setSort(click.currentTarget.name);
+      setAscending(true);
+    } else {
+      if (isAscending){
+        setAscending(false);
+      } else {
+        setAscending(null);
+        setSort(null);
+      }
+    }
+  }
+
+  if (sortByCriteria != null) {
+    data = _.sortBy(data, sortByCriteria);
+    if (!isAscending) {
+      data = _.reverse(data);
+    }
+  }
 
   //Map the `props.data` value into an array of `<GameDataRow>` elements here
-
+  let rows = data.map((temp) => {
+    return <GameDataRow key={temp.year} gameObj={temp}></GameDataRow>
+  });
 
   return (
     <div className="table-responsive">
@@ -17,24 +42,24 @@ export default function GameDataTable(props) {
           <tr>
             <th>
               Year
-              <SortButton name="year" />
+              <SortButton name="year" onClick={handleClick} active={"year" == sortByCriteria} ascending={"year" == sortByCriteria && isAscending}/>
             </th>
             <th className="text-end">
               Winner
-              <SortButton name="winner" />
+              <SortButton name="winner" onClick={handleClick} active={"winner" == sortByCriteria} ascending={"winner" == sortByCriteria && isAscending}/>
             </th>
-            <th className="text-center">
+            <th className="text-center" >
               Score
-              <SortButton name="score" />
+              <SortButton name="score" onClick={handleClick} active={"score" == sortByCriteria} ascending={"score" == sortByCriteria && isAscending}/>
             </th>
             <th>
               Runner-Up
-              <SortButton name="runner_up" />
+              <SortButton name="runner_up" onClick={handleClick} active={"runner_up" == sortByCriteria} ascending={"runner_up" == sortByCriteria && isAscending}/>
             </th>
           </tr>
         </thead>
         <tbody>
-          {/* render the array of <GameDataRow> elements here */}
+          {rows}
         </tbody>
       </table>
     </div>
